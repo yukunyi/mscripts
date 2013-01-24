@@ -1,0 +1,2 @@
+#! /bin/bash
+autossh -M 7776:7 -fNCD 7777 zhangkun@yukunyi.com

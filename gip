@@ -1,0 +1,12 @@
+#!/bin/bash
+echo -n "Geting http://get.youripfast.com/?hl=en ..."
+content=`curl -s http://get.youripfast.com/?hl=en`
+echo "Done."
+ip=`echo $content | grep -oP '\d+\.\d+\.\d+\.\d+' | tail -n 1`
+country=`echo $content | grep -oP 'Your Country:</td><td>\s<.*?>.*?<' | grep -oP '>[^<>]+<' | sed -r 's/[<>]+/ /g' | tail -n 1 | grep -oP '[^\s].*[^\s]'`
+city=`echo $content | grep -oP 'Your City:</td><td>.*?<' | cut -c 20- | sed -r 's/[\s<>]//g'`
+isp=`echo $content | grep -oP 'ISP:</td><td.*?>.*?<' | cut -c 25- | sed -r 's/[\s<>]//g'`
+echo "IP:$ip"
+echo "Country:$country"
+echo "City:$city"
+echo "ISP:$isp"

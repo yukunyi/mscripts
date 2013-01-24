@@ -1,0 +1,23 @@
+#!/bin/bash
+echo "Stop..."
+killall named > /dev/null 2>&1
+killall hostapd > /dev/null 2>&1
+killall hostapd > /dev/null 2>&1
+killall hostapd > /dev/null 2>&1
+ifconfig wlan0 down
+sleep 1
+ifconfig wlan0 up
+rm /var/run/hostapd/wlan0 > /dev/null 2>&1
+echo "Start..."
+systemctl restart iptables
+iptables -F -t nat
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+iptables -A FORWARD -i wlan0  -j ACCEPT
+iptables -A FORWARD -i mon.wlan0  -j ACCEPT
+iptables -A FORWARD -i eth0  -j ACCEPT
+
+sleep 1
+hostapd -B  /etc/hostapd/hostapd.conf  
+systemctl restart dnsmasq
+ifconfig wlan0 10.1.1.1 netmask 255.255.255.0
+ifconfig mon.wlan0 10.1.1.2 netmask 255.255.255.0

@@ -1,0 +1,13 @@
+#!/bin/bash
+case "$1" in
+     on )
+      export http_proxy=http://127.0.0.1:7778
+      echo "Your http proxy is on."
+     ;;
+     off )
+      unset http_proxy
+      echo "Your http proxy is off."
+     ;;
+     default)
+     echo "Usage:(on|off)"
+esac
