@@ -1,0 +1,9 @@
+#!/bin/bash
+self_name=`basename $0`
+for f in `ls`
+do
+	if [[ $f != $self_name ]]; then
+		echo "Install to:/usr/bin/$f"
+		cp -af $f /usr/bin/
+	fi
+done
