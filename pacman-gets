@@ -1,5 +1,5 @@
 #!/bin/bash
 d=`pwd`
 cd /var/cache/pacman/pkg
-mrun -t 20 -u `pacman $* -p | grep -E "pkg\\.tar\\.xz$"` && pacman $*
+mrun -s -e -t 20 -u `pacman $* -p | grep -E "pkg\\.tar\\.xz$"` && pacman $*
 cd $pwd

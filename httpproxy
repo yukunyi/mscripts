@@ -1,11 +1,28 @@
 #!/bin/bash
+
+assignProxy(){
+   PROXY_ENV="http_proxy ftp_proxy https_proxy all_proxy no_proxy HTTP_PROXY HTTPS_PROXY FTP_PROXY NO_PROXY ALL_PROXY"
+   for envar in $PROXY_ENV
+   do
+     if [[ $1 == 0 ]] ;
+     then
+        export $envar=$2
+     else
+        unset $envar
+     fi
+   done
+ }
+clrProxy(){
+  assignProxy 1 # This is what 'unset' does.
+}
+
 case "$1" in
      on )
-      export http_proxy=http://127.0.0.1:7778
+      assignProxy 0 http://127.0.0.1:7778
       echo "Your http proxy is on."
      ;;
      off )
-      unset http_proxy
+      assignProxy 1
       echo "Your http proxy is off."
      ;;
      default)
