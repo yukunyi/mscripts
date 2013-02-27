@@ -1,0 +1,15 @@
+#!/bin/bash
+case "$1" in
+  start )
+    echo -n "Start..."
+    test ! -f $HOME/.aria2.session && touch $HOME/.aria2.session
+    (nohup aria2c --enable-rpc --rpc-listen-all --rpc-allow-origin-all --file-allocation=none -x10 -s10 -j10 -c -d $HOME/下载/ --save-session=$HOME/.aria2.session -i $HOME/.aria2.session & >/dev/null 2>&1 && echo $? > /tmp/aria2c.pid ) && \
+      echo "Done." || \
+      echo "Fail." 
+  ;;
+  stop )
+    kill -9 `cat /tmp/aria2c.pid`
+  ;;
+default )
+  echo "Usage:(start|stop)"
+esac
