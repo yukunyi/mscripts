@@ -3,12 +3,23 @@ case "$1" in
   start )
     echo -n "Start..."
     test ! -f $HOME/.aria2.session && touch $HOME/.aria2.session
-    (nohup aria2c --enable-rpc --rpc-listen-all --rpc-allow-origin-all --file-allocation=none -x10 -s10 -j10 -c -d $HOME/下载/ --save-session=$HOME/.aria2.session -i $HOME/.aria2.session & >/dev/null 2>&1 && echo $? > /tmp/aria2c.pid ) && \
-      echo "Done." || \
-      echo "Fail." 
+    nohup aria2c --enable-rpc --rpc-listen-all --rpc-allow-origin-all --file-allocation=none -x10 -s10 -j10 -c -d $HOME/下载/ --save-session=$HOME/.aria2.session -i $HOME/.aria2.session >/dev/null 2>&1 &
+   pid=$!
+   sleep 1
+   ps aux | awk '{print $2}' | grep -P "^${pid}$" >/dev/null 2>&1 && \
+   (echo $pid>/tmp/aria2c.pid;echo "Done." ) || \
+   echo "Fail."
   ;;
   stop )
-    kill -9 `cat /tmp/aria2c.pid`
+    pid=`test -f /tmp/aria2c.pid && cat /tmp/aria2c.pid`
+    ps aux | awk '{print $2}' | grep -P "^${pid}$" >/dev/null 2>&1 && \
+    (echo "Kill $pid";kill -9 $pid) || \
+    echo "aria2c process not exist"
+    rm -rf /tmp/aria2c.pid
+  ;;
+  check )
+    pid=`test -f /tmp/aria2c.pid && cat /tmp/aria2c.pid`
+    ps aux | awk '{print $2}' | grep -P "^${pid}$" >/dev/null 2>&1 &&(echo "status:Running.";echo "pid:$pid";exit 0) || (echo "status:Not Running.";exit 1)
   ;;
 default )
   echo "Usage:(start|stop)"
